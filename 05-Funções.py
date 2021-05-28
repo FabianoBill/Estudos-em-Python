@@ -35,7 +35,7 @@ def mix(*args, **kwargs):       #
     print(kwargs)
 mix(0, 1, 2, nome="Bill", idade=45)
 a = (1, 2, 3)
-b = {'nome':"Bill", 'sobrenome':"Jaba"}
+b = {'nome': "Bill", 'sobrenome': "Jaba"}
 
 mix(a, b)
 mix(*a, **b)
