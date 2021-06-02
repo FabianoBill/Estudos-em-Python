@@ -34,12 +34,9 @@ def separa_sentencas(texto):
         del sentencas[-1]
     return sentencas
 
-
 def separa_frases(sentenca):
     '''A funcao recebe uma sentenca e devolve uma lista das frases dentro da sentenca'''
     return re.split(r'[,:;]+', sentenca)
-
-
 
 def separa_palavras(frase):
     '''A funcao recebe uma frase e devolve uma lista das palavras dentro da frase'''
@@ -73,35 +70,31 @@ def n_palavras_diferentes(lista_palavras):
 
     return len(freq)
 
-# def compara_assinatura(as_a, as_b):
-#     '''IMPLEMENTAR. Essa funcao recebe duas assinaturas de texto e deve devolver o grau de similaridade
-#     nas assinaturas.'''
-#
-#
-#     le_assinatura()
-#     wal
-#     ttr
-#     hlr
-#     sal
-#     sac
-#     pal
-#
-#
-#
+def compara_assinatura(as_a, as_b):
+    ''' Essa funcao recebe duas assinaturas de texto e deve devolver o grau de similaridade
+    nas assinaturas.'''
+    grau_similaridade = 0
+    for indice in range(0, 6):
+        grau_similaridade += abs(as_a[indice] - as_b[indice])/6
+    return grau_similaridade
+
 def calcula_assinatura(texto):
     ''' Essa funcao recebe um texto e deve devolver a assinatura do texto.'''
 
     sentencas = separa_sentencas(texto)
-    print('sent\n', sentencas)
     frases = []
     for indice in range(0, len(sentencas)):
         frases.append(separa_frases(sentencas[indice]))
-    print('frases\n', frases)
+    tot_frases = 0
+    for indice in range(0, len(frases)):
+        tot_frases += len(frases[indice])
     palavras = []
     for indice in range(0, len(frases)):
         for indice2 in range(0, len(frases[indice])):
             palavras.append(separa_palavras(frases[indice][indice2]))
-    print('palavras\n', palavras)
+    tot_palavras = 0
+    for indice in range(0, len(palavras)):
+        tot_palavras += len(palavras[indice])
     caracteres = []
     for indice in range(0, len(palavras)):
         for indice2 in range(0, len(palavras[indice])):
@@ -109,80 +102,55 @@ def calcula_assinatura(texto):
             for indice3 in range(0, len(palavras[indice][indice2])):
                 palavras[indice][indice2][indice3].split()
                 caracteres.append(palavras[indice][indice2][indice3])
-    caracteresf = []
+    caracteres_frase = []
     for indice in range(0, len(frases)):
         for indice2 in range(0, len(frases[indice])):
             frases[indice][indice2].split()
             for indice3 in range(0, len(frases[indice][indice2])):
                 frases[indice][indice2][indice3].split()
-                caracteresf.append(frases[indice][indice2][indice3])
-
-    caracteress = []
+                caracteres_frase.append(frases[indice][indice2][indice3])
+    caracteres_sentenca = []
     for indice in range(0, len(sentencas)):
         for indice2 in range(0, len(sentencas[indice])):
             sentencas[indice][indice2].split()
             for indice3 in range(0, len(sentencas[indice][indice2])):
                 sentencas[indice][indice2][indice3].split()
-                caracteress.append(sentencas[indice][indice2][indice3])
-
-
-
-
+                caracteres_sentenca.append(sentencas[indice][indice2][indice3])
     palavras_separadas = []
     for indice in range(0, len(palavras)):
         for indice2 in range(0, len(palavras[indice])):
             palavras_separadas.append(palavras[indice][indice2])
-
-
     npu = n_palavras_unicas(palavras_separadas)
     npd = n_palavras_diferentes(palavras_separadas)
 
-    print('npu ', npu)
-    print('npd ', npd)
-
-
-
-
-
-
-
-    tot_sentencas = len(sentencas)
-    print('tot sent', tot_sentencas)
-    tot_palavras = 0
-    for indice in range(0, len(palavras)):
-        tot_palavras += len(palavras[indice])
-    print(tot_palavras)
-    tot_frases = 0
-    for indice in range(0, len(frases)):
-        tot_frases += len(frases[indice])
-    print('tot frases', tot_frases)
-    # tot_palavras = 0
-    # for indice in range(0, len(palavras)):
-    #     tot_palavras += len(palavras[indice])
-    # print('tot palavras', tot_palavras)
-    # tot_caracteres = 0
-    # for indice in range(0, len(palavras)):
-    #     for indice2 in range(0, len(palavras[indice])):
-    #         tot_caracteres += len(palavras[indice][indice2])
-    tot_caracteres = len(caracteres)
-    print('tot carac', tot_caracteres)
-    tot_caracteresf = len(caracteresf)
-    print('tot carac', tot_caracteresf)
-    tot_caracteress = len(caracteress)
-    print('tot carac', tot_caracteress)
-    wal1 = tot_caracteres/tot_palavras
+    wal1 = len(caracteres)/tot_palavras
     ttr1 = npd/tot_palavras
     hlr1 = npu/tot_palavras
-    sal1 = tot_caracteress/tot_sentencas
-    sac1 = tot_frases/tot_sentencas
-    pal1 = tot_caracteresf/tot_frases
+    sal1 = len(caracteres_sentenca) / len(sentencas)
+    sac1 = tot_frases/len(sentencas)
+    pal1 = len(caracteres_frase) / tot_frases
     return [wal1, ttr1, hlr1, sal1, sac1, pal1]
 
+def avalia_textos(textos, ass_cp):
+    ''' Essa funcao recebe uma lista de textos e uma assinatura ass_cp e deve devolver o numero (1 a n)
+    do texto com maior probabilidade de ter sido infectado por COH-PIAH.'''
+    probabilidades = []
+    for indice in range(0, len(textos)):
+        as_b = calcula_assinatura(textos[indice])
+        probabilidades.append(compara_assinatura(ass_cp, as_b))
+    for indice, valor in enumerate(probabilidades):
+        if valor == min(probabilidades):
+            return indice + 1
 
-# def avalia_textos(textos, ass_cp):
-#     '''IMPLEMENTAR. Essa funcao recebe uma lista de textos e uma assinatura ass_cp e deve devolver o numero (1 a n)
-#     do texto com maior probabilidade de ter sido infectado por COH-PIAH.'''
 
-texto = "Então resolveu ir brincar com a Máquina pra ser também imperador dos filhos da mandioca. Mas as três cunhas deram muitas risadas e falaram que isso de deuses era gorda mentira antiga, que não tinha deus não e que com a máquina ninguém não brinca porque ela mata. A máquina não era deus não, nem possuía os distintivos femininos de que o herói gostava tanto. Era feita pelos homens. Se mexia com eletricidade com fogo com água com vento com fumo, os homens aproveitando as forças da natureza. Porém jacaré acreditou? nem o herói! Se levantou na cama e com um gesto, esse sim! bem guaçu de desdém, tó! batendo o antebraço esquerdo dentro do outro dobrado, mexeu com energia a munheca direita pras três cunhas e partiu. Nesse instante, falam, ele inventou o gesto famanado de ofensa: a pacova."
-texto2 = "O gato caçava o rato"
-print(calcula_assinatura(texto))
+ass_cp = le_assinatura()
+textos = []
+indice = 0
+while True:
+    texto = (input(f"Digite o texto {indice + 1} (aperte enter para sair): "))
+    if not texto:
+        break
+    textos.append(texto)
+    indice += 1
+
+print(f"O autor do texto {avalia_textos(textos, ass_cp)} está infectado com COH-PIAH")
