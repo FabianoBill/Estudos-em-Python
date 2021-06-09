@@ -1,5 +1,4 @@
-class Carro:
-    """
+"""
     Você deve criar uma classe carro que vai possuir
 dois atributos compostos por outras duas classes:
 
@@ -92,39 +91,46 @@ Método girar_a_esquerda
     'Norte'
     >>> carro.girar_a_esquerda()
     >>> carro.calcular_direcao()
-    'Oeste'"""
-    class Motor:
-        def __init__(self):
-            self.velocidade = 0
-        def acelerar(self):
-            self.velocidade += 1
-        def frear(self):
-            self.velocidade -= 2
+    'Oeste'
+"""
 
-    class Direcao:
-        def __init__(self, direcao='Norte'):
-            self.direcao = direcao
-        def girar_a_direita(self):
-            if self.direcao == 'Norte':
-                return 'Leste'
-            if self.direcao == 'Leste':
-                return 'Sul'
-            if self.direcao == 'Sul':
-                return 'Oeste'
-            if self.direcao == 'Oeste':
-                return 'Norte'
+class Carro:
+    def __init__(self, direcao, motor):
+        self.direcao = direcao
+        self.motor = motor
+    def calcular_velocidade(self):
+        return self.motor.velocidade
+    def acelerar(self):
+        self.motor.acelerar()
+    def frear(self):
+        self.motor.frear()
+    def calcular_direcao(self):
+        return self.direcao.valor
+    def girar_a_esquerda(self):
+        self.direcao.girar_a_esquerda()
+    def girar_a_direita(self):
+        self.direcao.girar_a_direita()
 
-        def girar_a_esquerda(self):
-            if self.direcao == 'Norte':
-                return 'Oeste'
-            if self.direcao == 'Oeste':
-                return 'Sul'
-            if self.direcao == 'Sul':
-                return 'Leste'
-            if self.direcao == 'Leste':
-                return 'Norte'
 
-motor = Motor()
+class Motor:
+    def __init__(self):
+        self.velocidade = 0
+    def acelerar(self):
+        self.velocidade += 1
+    def frear(self):
+        self.velocidade -= 2
+        self.velocidade = max(0, self.velocidade)
 
-carro = Carro()
 
+class Direcao:
+    CARDINAL = ('Norte', 'Leste', 'Sul', 'Oeste')
+    def __init__(self):
+        self.indice = 0
+        self.valor = self.CARDINAL[0]
+    def girar_a_direita(self):
+        self.indice = (self.indice + 1) % 4
+        self.valor = self.CARDINAL[self.indice]
+
+    def girar_a_esquerda(self):
+        self.indice = (self.indice - 1) % 4
+        self.valor = self.CARDINAL[self.indice]
